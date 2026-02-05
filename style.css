@@ -1,0 +1,243 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: background 0.5s ease;
+}
+
+body.night-mode {
+  background: linear-gradient(135deg, #1a0033, #2d004d);
+}
+
+.moon {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  font-size: 3rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 1;
+}
+
+body.night-mode .moon {
+  opacity: 1;
+}
+
+.night-toggle {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.night-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.night-toggle:active {
+  transform: scale(0.95);
+}
+
+body.night-mode .night-toggle {
+  background: rgba(100, 50, 150, 0.3);
+  border-color: rgba(200, 150, 255, 0.3);
+}
+
+/* Scene gives depth */
+.scene {
+  perspective: 1400px;
+}
+
+/* Card scales with screen */
+.card {
+  width: min(90vw, 700px);
+  aspect-ratio: 3 / 4;
+  position: relative;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* Shared cover styles */
+.card-face {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  top: 0;
+  background: white;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+  overflow: hidden;
+}
+
+/* Image fits perfectly */
+.card-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Left cover hinge */
+.left-cover {
+  left: 0;
+  transform-origin: left center;
+  transition: transform 1.1s ease;
+}
+
+/* Right cover hinge */
+.right-cover {
+  right: 0;
+  transform-origin: right center;
+  transition: transform 1.1s ease;
+}
+
+/* Inside page */
+.card-inside {
+  position: absolute;
+  inset: 0;
+  background: #fffafc;
+  padding: clamp(12px, 4vw, 32px);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.6s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  overflow: hidden;
+  
+}
+
+/* Open animation */
+.card.open .left-cover {
+  transform: rotateY(-155deg);
+}
+
+.card.open .right-cover {
+  transform: rotateY(155deg);
+}
+
+.card.open .card-inside {
+  opacity: 1;
+}
+
+/* Typography scaling
+.card-inside h1 {
+  color: #e63946;
+  font-size: clamp(1.4rem, 5vw, 1.8rem);
+  margin-bottom: 1rem;
+} */
+
+/* Typography scaling */
+.card-inside h1 {
+  color: #cf2230;
+  font-size: clamp(1rem, 4vw, 1.6rem);
+  margin: 0;
+  white-space: nowrap;
+  font-weight: 300;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+.card-inside p {
+  font-size: clamp(0.95rem, 4vw, 1.1rem);
+  line-height: 1.6;
+}
+
+.from {
+  margin-top: 1.5rem;
+  font-style: italic;
+}
+
+/* Tablet & desktop polish */
+@media (min-width: 768px) {
+  .card {
+    width: 425px;
+  }
+}
+
+
+.heart {
+  position: absolute;
+  top: -10vh;
+  color: #c77dff; /* lavender */
+  opacity: 0.6;
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  pointer-events: none;
+  text-shadow: 0 0 10px #c77dff, 0 0 20px rgba(199, 125, 255, 0.5);
+  filter: drop-shadow(0 0 8px rgba(199, 125, 255, 0.4));
+}
+
+.red-heart {
+  color: #ff1744; /* red */
+  pointer-events: auto;
+  text-shadow: 0 0 10px #ff1744, 0 0 20px rgba(255, 23, 68, 0.5);
+  filter: drop-shadow(0 0 8px rgba(255, 23, 68, 0.4));
+}
+
+
+.heart-rain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(120vh);
+  }
+}
+
+@keyframes popup {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, -60px) scale(1.3);
+  }
+}
+
+.tap-heart {
+  position: fixed;
+  color: #87ceeb; /* light blue */
+  font-size: 2rem;
+  pointer-events: none;
+  animation: popup 0.6s ease-out forwards;
+  text-shadow: 0 0 10px #87ceeb, 0 0 20px rgba(135, 206, 235, 0.5);
+  filter: drop-shadow(0 0 8px rgba(135, 206, 235, 0.4));
+}
+
+.scene {
+  position: relative;
+  z-index: 2;
+}
