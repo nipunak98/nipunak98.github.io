@@ -483,7 +483,7 @@ body.night-mode::after {
   max-width: 60vw;
   display: block;          /* 🔑 removes baseline gap */
   margin: -44px auto;
-  margin-right: 109px;          /* centers image */
+  margin-right: 600px;          /* centers image */
 }
 
 
