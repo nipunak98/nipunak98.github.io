@@ -489,8 +489,8 @@ body.night-mode::after {
 
 .vally-speech {
   position: absolute;
-  top: -83px;               /* adjust to mouth height */
-  left: 49%;
+  top: -55px;               /* adjust to mouth height */
+  left: 43%;
   transform: translateX(-50%);
   z-index: 2;
 
