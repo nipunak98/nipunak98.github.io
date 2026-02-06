@@ -471,24 +471,34 @@ body.night-mode::after {
   pointer-events: none;
 }
 
-.vally {
+/* .vally {
   position: relative; 
   text-align: center;
   max-width: 425px;
   animation: vallyPop 0.6s ease;
+} */
+
+vally {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;          /* space between character and bubble */
 }
 
 .vally img {
-  width: 160px;
-  max-width: 60vw;
-  display: block;          /* 🔑 removes baseline gap */
-  margin: -44px auto;
-  margin-right: 600px;          /* centers image */
+  width: 140px;        /* smaller on mobile, you can increase later */
+  max-width: 45vw;
+  height: auto;
+  margin: 0;           /* reset your crazy margins */
 }
 
 
 .vally-speech {
-  position: absolute;
+  position: relative;
   top: 20px;               /* adjust to mouth height */
   left: 99%;
   transform: translateX(-50%);
