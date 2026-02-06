@@ -9,12 +9,35 @@
 <body>
 
   
+
+<div class="top-controls">
+  <button id="refreshBtn" title="Restart">🔄</button>
   <button class="night-toggle" id="nightToggle" title="Toggle Night Mode">🌙</button>
+</div>
+
+
+  <!-- Vally Guide Overlay -->
+    <div id="vallyOverlay" class="vally-overlay hidden">
+      <div class="vally">
+        <img id="vallyImage" src="images/vally/pointing1.png" alt="Vally">
+          <div class="vally-speech">
+            <div class="vally-bubble" id="vallyText"></div>
+            <button id="vallyNext">Got it ✨</button>
+          </div>
+      </div>
+    </div>
+
+
+
+
 
   <div class="heart-rain">
 
     
   </div>
+
+
+  
 
   <div class="scene">
     <div class="card" id="card">
@@ -30,16 +53,64 @@
       </div>
 
       <!-- Inside Page -->
-      <div class="card-inside">
-        <h1>Happy Valentine's Day ❤️</h1>
-        <p>
-          I made this little card just for you 🌸<br><br>
-          I hope it brings a smile to your face,<br>
-          the same way you do to mine 💫
-        </p>
-        <p class="from">— Yours 😊</p>
+    <div class="card-inside">
+
+      <!-- GREETING (step 0) -->
+          <div id="greetingStep" class="step active">
+              <h1>Happy Valentine's Day ❤️</h1>
+              <p>
+                I made this little card just for you 🌸<br><br>
+                I hope it brings a smile to your face,<br>
+                the same way you do to mine 💫
+              </p>
+
+              <p class="from">— Yours 😊</p>
+
+              <p>
+                Would you like to go on a train ride?<br>
+                If yes, click <b>Next 🚆</b>
+              </p>
+          </div>
+
+        <!-- STORY (step 1+) -->
+          <div id="storyStep" class="step hidden">
+            <img id="storyImage" class="story-image" />
+            <h1 id="storyTitle"></h1>
+            <p id="storyText"></p>
+            <button id="storyEndBtn" class="hidden">Bye 👋</button>
+          </div>
+
+      <!-- CONTROLS -->
+      <div class="story-controls">
+       
+        <button id="nextBtn">Next ➡</button>
       </div>
 
+        <!-- FINAL QUESTION -->
+        <div class="final-choice hidden" id="finalChoice">
+          <p>Will you be my Valentine? 💖</p>
+          <button id="yesBtn">Yes 💕</button>
+          <button id="noBtn">No 💔</button>
+        </div>
+
+    </div>
+
+      
+
+    </div>
+  </div>
+
+  <!-- Hidden Birthday Card -->
+  <div class="birthday-card hidden" id="birthdayCard">
+    <div class="birthday-inner">
+      <h1>🎉 Can't wait for your Birthdayy!! 🎂</h1>
+      <p>
+        You found all 27 special hearts ❤️<br><br>
+        Just wanted you to know…<br>
+        your special day is already on my mind ✨
+      </p>
+      <p id="countdown"></p>
+      
     </div>
   </div>
 
