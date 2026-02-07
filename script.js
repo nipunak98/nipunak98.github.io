@@ -1,19 +1,22 @@
 const card = document.getElementById("card");
 const heartRain = document.querySelector(".heart-rain");
 const nightToggle = document.getElementById("nightToggle");
+const bgMusic = document.getElementById("bgMusic");
 const refreshBtn = document.getElementById("refreshBtn");
 const birthdayCard = document.getElementById("birthdayCard");
+
+
 
 const countdown = document.getElementById("countdown");
 const birthday = new Date("February 27, 2023 00:00:00");
 
 
 
-
+let musicStarted = false;
 let currentStep = -1;
 let currentStory = null;   // yesStory or noStory
 let branchStep = 0;        // index for yes/no story
-
+let userChoice = null; // "yes" or "no"
 
 const greetingStep = document.getElementById("greetingStep");
 const storyStep = document.getElementById("storyStep");
@@ -35,34 +38,30 @@ const storyEndBtn = document.getElementById("storyEndBtn");
 
 const storySteps = [
 
-  { text:" I would like to take you on a journey.\nactually it's a little story.In this story, you make decisions.",
-    image: "images/train.jpg"
+  { text:" I would like to take you on a journey.\n Actually it's a little story.In this story, you make decisions.",
+    image: "images/story/img1.png"
 
   },
   {
     
-    text: "One day, you received a ticket.\nYou didn’t know where it would take you.",
-    image: "images/train.jpg"
+    text: "Here's your ticket.\nGrab this. I'm at the next station waiting for you.",
+    image: "images/story/img2.png"
   },
+  
   {
     
-    text: "One day, you received a ticket.\nYou didn’t know where it would take you.",
-    image: "images/train.jpg"
-  },
-  {
-    
-    text: "You stepped onto the train.\nA little nervous… a little excited.",
-    image: "images/train.jpg"
+    text: "You stepped onto the train.\n The train started moving, and we were on our way.",
+    image: "images/story/img3.png"
   },
   {
     
     text: "The view outside was calm and beautiful.\nTime felt slower.",
-    image: "images/train.jpg"
+    image: "images/story/img4.png"
   },
   {
     
     text: "The train stopped.\nYou stepped off.",
-    image: "images/train.jpg"
+    image: "images/story/img5.png"
   },
   {
    
@@ -100,25 +99,32 @@ let manualNightMode = false;
 
 /* ================= STORY HANDLING ================= */
 
+// card.addEventListener("click", () => {
+//   card.classList.toggle("open");
+//   heartRain.style.filter = card.classList.contains("open")
+//     ? "blur(1px)"
+//     : "none";
+
+//   if (card.classList.contains("open")) {
+//   if (currentStory) {
+//     if (branchStep < currentStory.length - 1) {
+//       branchStep++;
+//       renderBranchStory();
+//     }
+//   } else {
+//     renderStory();
+//   }
+// }
+
+// });
+
+
 card.addEventListener("click", () => {
   card.classList.toggle("open");
   heartRain.style.filter = card.classList.contains("open")
     ? "blur(1px)"
     : "none";
-
-  if (card.classList.contains("open")) {
-  if (currentStory) {
-    if (branchStep < currentStory.length - 1) {
-      branchStep++;
-      renderBranchStory();
-    }
-  } else {
-    renderStory();
-  }
-}
-
 });
-
 
 refreshBtn.addEventListener("click", (e) => {
   e.stopPropagation(); // don’t close card
@@ -279,6 +285,22 @@ nightToggle.addEventListener("click", () => {
   manualNightMode = !manualNightMode;
   updateNightMode();
 });
+
+
+const musicToggle = document.getElementById("musicToggle");
+
+musicToggle.addEventListener("click", (e) => {
+  e.stopPropagation();
+
+  if (bgMusic.paused) {
+    bgMusic.play();
+    musicToggle.textContent = "🔊";
+  } else {
+    bgMusic.pause();
+    musicToggle.textContent = "🔇";
+  }
+});
+
 
 /* Night mode detection */
 function checkNightMode() {
@@ -507,7 +529,7 @@ const vallyImage = document.getElementById("vallyImage");
 const vallyNext = document.getElementById("vallyNext");
 
 let vallyStep = 0;
-let userChoice = null; // "yes" or "no"
+
 
 let vallyEnding = [];
 let vallyEndingStep = 0;
@@ -528,26 +550,26 @@ const vallyIntro = [
     image: "images/vally/pointing.png"
   },
   {
-    text: "Guy who created me told me about you!<br> hello, how are you?<br>Hope you are amazing as the stroies i heard about you .",
+    text: "Guy who created me told me about you!<br> hello, how are you?<br>You are amazing as the stroies i heard about you .",
     image: "images/vally/pointing.png"
   },
   {
-    text: "well, this is a special card, it’s not like the other cards you have seen before.<br>💖",
+    text: "well, this is a special card,<br> it’s not like the other cards<br> you have seen before.<br>💖",
     image: "images/vally/exited.png"
   },
   {
     text: "I'm the only card in the world that is talking!<br>and creator made me just for you!<br>Isn’t that amazing?😊",
-    image: "images/vally/pointing1.png"
+    image: "images/vally/hands n hips.png"
   },
 
   {
     text: "Please allow me to show you around.",
-    image: "images/vally/pointing up.png"
+    image: "images/vally/explain.png"
   },
 
   {
-    text: "This is a special card 💌<br>You can tap it to open.<br> creator left you a ticket for a train ride inside the card",
-    image: "images/vally/pointing up.png"
+    text: "This is a special card 💌<br>You can tap it to open.<br> creator left you a ticket <br>for a train ride inside the card",
+    image: "images/vally/nerd explain.png"
   },
    {
     text: "Grab it and step on the train!<br> It will take you to a little journey.",
@@ -555,48 +577,48 @@ const vallyIntro = [
   },
 
    {
-    text: "Oh!, almost forgot... there are three buttons.<br> the refresh button will load the card",
-    image: "images/vally/pointing up.png"
+    text: "Oh!, almost forgot... <br>there are three buttons.<br> the refresh button will load the card",
+    image: "images/vally/refresh.png"
   },
    {
-    text: "and the moon button is for the dark mode, in case it's too bright to your eyes.",
-    image: "images/vally/pointing up.png"
+    text: "Moon button is for the dark mode<br> in case it's too bright to your eyes.",
+    image: "images/vally/moon.png"
   },
 
   {
-    text: "and fianlly, the music button, you can turn it on and off as you like 🎵",
-    image: "images/vally/pointing up.png"
+    text: "and fianlly, the music button.<br> you can turn it on and off as you like 🎵",
+    image: "images/vally/music.png"
   },
 
   
   {
     text: "There are tiny hearts falling too 💜❤️<br>Some are more special than others 😉",
-    image: "images/vally/exited.png"
+    image: "images/vally/Happy jump.png"
   },
   {
-    text: "Pssst... try tapping on the red hearts if you see them!<br> They have a little surprise for you 🎁",
-    image: "images/vally/pointing up.png"
+    text: "Pssst...<br> try tapping on the red hearts<br> if you see them!<br> They have a little surprise <br>for you 🎁",
+    image: "images/vally/secret.png"
   },
   {
     text: "I want to apologize in advance, if there are mishaps in the card.",
-    image: "images/vally/pointing up.png"
+    image: "images/vally/sad concern.png"
   },
   {
-    text: "Creator said he tried everything to make it work perfectly, <br>but you know, sometimes things just don’t go as planned 😅",
-    image: "images/vally/pointing up.png"
+    text: "Creator said he tried everything <br>to make it work perfectly, <br>but you know, sometimes things just don’t go as planned 😅",
+    image: "images/vally/nerd explain.png"
   },
   {
     text: "Creator said he made me with one brain cell, so I might be a little slow sometimes 🧠💤",
-    image: "images/vally/exited.png"
+    image: "images/vally/explain question.png"
   },
   {
-    text: "He said you have 2 very big brain cells, so you are already smarter than me!<br> But please be patient with me if I mess up sometimes 🙏",
-    image: "images/vally/exited.png"
+    text: "He said you have 2 very big brain cells,<br> so you are already smarter than me!<br> But please be patient with me<br> if I mess up sometimes 🙏",
+    image: "images/vally/laughing shy.png"
 
   },
    {
-    text: "Okay, I think that’s all for the introduction.<br> I’ll be here if you need me!<br> Just tap the next button to start your journey!",
-    image: "images/vally/exited.png"
+    text: "Okay, I think that’s all for the introduction.<br> I’ll be here if you need me!<br> Just tap the next button<br> to start your journey!",
+    image: "images/vally/Happy jump.png"
   }
 ];
 
@@ -604,16 +626,20 @@ const vallyIntro = [
 const vallyYesEnding = [
   {
     text: "I knew it 💖<br>I could feel it somehow.",
-    image: "images/vally/happy.png"
+    image: "images/vally/exited.png"
   },
   {
     text: "Love takes courage…<br>and you chose it ✨",
-    image: "images/vally/happy.png"
+    image: "images/vally/Happy jump.png"
   },
   {
-    text: "I’ll remember this moment forever 💌",
-    image: "images/vally/happy.png"
-  }
+    text: "I’m very happy for you 💌",
+    image: "images/vally/Happy jump.png"
+  }, 
+   {
+    text: "Didn't you found the surprice yet? <br> Try tapping on the red hearts if you see them!<br> They have a little surprise for you 🎁",
+    image: "images/vally/nerd explain.png"
+  },
 ];
 
 const vallyNoEnding = [
@@ -673,6 +699,8 @@ window.addEventListener("load", () => {
 
 
 
+
+
 function showVallyIntro() {
   document.querySelector(".scene").style.filter = "blur(4px)";
   vallyOverlay.classList.remove("hidden");
@@ -719,6 +747,7 @@ function updateVally() {
 
 
 vallyNext.addEventListener("click", () => {
+  startBackgroundMusic(); // Ensure music starts on first interaction with Vally
   if (isVallyTyping) return; // 🚫 don’t skip typing
 
   // INTRO FLOW
@@ -739,6 +768,12 @@ vallyNext.addEventListener("click", () => {
   } else {
     vallyNext.style.display = "none";
   }
+
+
+   setTimeout(() => {
+      hideVally();
+    }, 9999);
+
 });
 
 
@@ -797,6 +832,46 @@ function showVallyEnding() {
   vallyNext.style.display = "inline-block";
   updateVallyEnding();
 }
+
+
+function fadeInAudio(audio, targetVolume = 0.6, duration = 2000) {
+  audio.volume = 0;
+  audio.play();
+
+  const stepTime = 50;
+  const steps = duration / stepTime;
+  const volumeStep = targetVolume / steps;
+
+  const fadeInterval = setInterval(() => {
+    if (audio.volume < targetVolume) {
+      audio.volume = Math.min(audio.volume + volumeStep, targetVolume);
+    } else {
+      clearInterval(fadeInterval);
+    }
+  }, stepTime);
+}
+
+
+function startBackgroundMusic() {
+  if (!musicStarted) {
+    fadeInAudio(bgMusic, 0.6, 2500); // volume, duration
+    musicStarted = true;
+  }
+
+  bgMusic.volume = 0.35;
+  bgMusic.loop = true;
+  bgMusic.play().catch(() => {});
+  musicStarted = true;
+
+  document.removeEventListener("click", startBackgroundMusic);
+  document.removeEventListener("touchstart", startBackgroundMusic);
+}
+
+// Start music on FIRST user interaction anywhere
+document.addEventListener("click", startBackgroundMusic);
+document.addEventListener("touchstart", startBackgroundMusic);
+
+
 
 function typeVallyText(htmlText, speed = 35, callback) {
   clearInterval(vallyTypingInterval);

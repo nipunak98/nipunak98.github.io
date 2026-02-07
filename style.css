@@ -25,7 +25,7 @@ body.night-mode {
   top: 16px;
   right: 16px;
   display: flex;
-  gap: 10px;              /* 👈 spacing */
+  gap: 10px;             
   z-index: 1000;
 }
 
@@ -64,11 +64,11 @@ body.night-mode::after {
   filter: blur(1px);
   pointer-events: none;
 }
-
+/* 
 #refreshBtn {
   position: fixed;
   top: 16px;
-  right: 64px; /* adjust next to night mode */
+  right: 64px; 
   background: transparent;
   border: none;
   font-size: 1.4rem;
@@ -78,7 +78,7 @@ body.night-mode::after {
 
 #refreshBtn:hover {
   opacity: 1;
-}
+} */
 
 
 /* Scene gives depth */
