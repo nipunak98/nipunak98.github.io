@@ -674,6 +674,7 @@ window.addEventListener("load", () => {
 
 
 function showVallyIntro() {
+  document.querySelector(".scene").style.filter = "blur(4px)";
   vallyOverlay.classList.remove("hidden");
   vallyStep = 0;
   updateVally();
@@ -743,6 +744,7 @@ vallyNext.addEventListener("click", () => {
 
 
 function hideVally() {
+  document.querySelector(".scene").style.filter = "none";
   vallyOverlay.classList.add("hidden");
 }
 
@@ -783,6 +785,7 @@ function updateVallyEnding() {
 
 
 function showVallyEnding() {
+  document.querySelector(".scene").style.filter = "blur(4px)";
    vallyOverlay.classList.remove("hidden");
 
   // Choose correct dialogue set
