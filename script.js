@@ -66,23 +66,23 @@ const storySteps = [
   {
    
     text: "I was there when you arrived.\nI wanted to ask you something.",
-    image: "images/train.jpg"
+    image: "images/story/img6.png"
   },
   {
     
     text: "I know everything was bit sudden, you are confused, and you might be overthinking thigs a lot recently.",
-    image: "images/train.jpg"
+    image:  "images/story/img7.png"
   },
   {
     
     text: "But today is a special day.\nA day of love being celebreated. A day that reminds us to cherish the people we care about.",
-    image: "images/train.jpg"
+    image:  "images/story/img6.png"
   },
 
   {
     
     text: "so i have one question to ask you.",
-    image: "images/train.jpg"
+    image: "images/story/img6.png"
   }
   
 ];
@@ -661,15 +661,15 @@ const vallyNoEnding = [
 const yesStory = [
   {
     text: "You said yes… 💖",
-    image: "images/story-yes-1.png"
+    image: "images/story/img8.png"
   },
   {
     text: "That honestly means a lot.",
-    image: "images/story-yes-2.png"
+    image: "images/story/img8.png"
   },
   {
     text: "I’ve been waiting to hear that.",
-    image: "images/story-yes-3.png"
+    image: "images/story/img8.png"
   }
 ];
 
