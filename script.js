@@ -140,7 +140,7 @@ const storySteps = [
   },
   {
    
-    text: "And I wish you Helthy, Successful and Love filled life ahead 💖",
+    text: "And I wish you Healthy, Successful and Love filled life ahead 💖",
     image: "images/story/img66.jpg"
   },
   {
@@ -720,7 +720,7 @@ function unlockBirthday() {
     birthdayCard.classList.remove("hidden");
     birthdayCard.classList.add("show");
 
-    fireCannonWaves(6, 500); // 🎉 BOOM
+    fireCannonWaves(1, 500); // 🎉 BOOM
   }, 600);
 }
 
@@ -935,7 +935,7 @@ const vallyYesEnding = [
     image: "images/vally/Happy jump.webp"
   }, 
    {
-    text: "Didn't you found the surprice yet? <br> Try tapping on the red hearts if you see them!<br> They have a little surprise for you 🎁",
+    text: "Didn't you found the surprise yet? <br> Try tapping on the red hearts if you see them!<br> They have a little surprise for you 🎁",
     image: "images/vally/nerd explain.webp"
   },
 ];
