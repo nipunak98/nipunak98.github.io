@@ -8,16 +8,19 @@ const birthdayCard = document.getElementById("birthdayCard");
 
 
 const countdown = document.getElementById("countdown");
-const birthday = new Date("February 27, 2023 00:00:00");
+// const birthday = new Date("February 27, 2023 00:00:00");
 
 
 let vallyActive = true;
 let musicStarted = false;
+let userMutedMusic = false;
 let currentStep = -1;
 let currentStory = null;   // yesStory or noStory
 let branchStep = 0;        // index for yes/no story
 let userChoice = null; // "yes" or "no"
 let isTransitioning = false;
+let heartTapCount = 0;
+
 
 
 const greetingStep = document.getElementById("greetingStep");
@@ -121,7 +124,7 @@ const storySteps = [
   
   {
     
-    text: "I Value Your Frendship A Lot, and I wanted to create something special for you on this Valentine's day 💫 ",
+    text: "I Value Your Frendship A Lot, and I wanted to create something special for you on this Valentine's day 💫",
     image: "images/story/img3.jpg"
   },
   {
@@ -137,7 +140,7 @@ const storySteps = [
   {
    
     text: "And I wish you Helthy, Successful and Love filled life ahead 💖",
-    image: "images/story/img6.jpg"
+    image: "images/story/img66.jpg"
   },
   {
     text: "Eat healthy, Sleep well, Take care of yourself,  and never forget to be kind to yourself and others 💫",
@@ -146,7 +149,7 @@ const storySteps = [
   },
   {
     
-    text: "I know we have some ups and downs between us, but no matter what you can always count on me to be there for you.",
+    text: "I know we have some ups and downs between us, but no matter what you can always count on me to be there for you Mate.",
     image:  "images/story/img9.jpg"
   },
   {
@@ -406,24 +409,8 @@ function startBranchStory(storyArray) {
   renderBranchStory();
 }
 
-// function renderBranchStory() {
-//   const step = currentStory[branchStep];
 
-//   storyImage.onload = null;
-//   // storyImage.classList.remove("show");
-//   // storyImage.onload = () => storyImage.classList.add("show");
-//   storyImage.src = step.image;
 
-//   storyText.innerHTML = step.text.replace(/\n/g, "<br>");
-
-//   if (branchStep === currentStory.length - 1) {
-//     nextBtn.style.display = "none";
-//     storyEndBtn.classList.remove("hidden");
-//   } else {
-//     nextBtn.style.display = "inline-block";
-//     storyEndBtn.classList.add("hidden");
-//   }
-// }
 
 function renderBranchStory() {
   const step = currentStory[branchStep];
@@ -473,13 +460,16 @@ musicToggle.addEventListener("click", (e) => {
   e.stopPropagation();
 
   if (bgMusic.paused) {
-    bgMusic.play();
+    userMutedMusic = false;     // ✅ user allows music
+    bgMusic.play().catch(() => {});
     musicToggle.textContent = "🔊";
   } else {
+    userMutedMusic = true;      // ✅ user intentionally muted
     bgMusic.pause();
     musicToggle.textContent = "🔇";
   }
 });
+
 
 
 /* Night mode detection */
@@ -542,16 +532,19 @@ function createHeart() {
   e.stopPropagation();
 
   const rect = heart.getBoundingClientRect();
-  burstHeart(
-    rect.left + rect.width / 2,
-    rect.top + rect.height / 2
-  );
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  burstHeart(centerX, centerY);
+  heartTapCount++;
+  showHeartCounter(centerX, centerY);
+  
 
   heart.remove();
 
   if (!birthdayUnlocked) {
     redHeartCount++;
-    if (redHeartCount === 27) unlockBirthday();
+    if (redHeartCount === 24) unlockBirthday();
   }
 });
   }
@@ -608,6 +601,104 @@ function burstHeart(x, y) {
   }
 }
 
+function showHeartCounter(x, y) {
+  const counter = document.createElement("div");
+  counter.className = "heart-counter";
+  counter.textContent = heartTapCount;
+
+  counter.style.left = `${x}px`;
+  counter.style.top = `${y}px`;
+
+  document.body.appendChild(counter);
+
+  setTimeout(() => {
+    counter.remove();
+  }, 800);
+}
+
+
+function launchConfettiCannons(amountPerSide = 80) {
+  const colors = [
+    "#ff4d6d",
+    "#ffbe0b",
+    "#3a86ff",
+    "#8338ec",
+    "#06d6a0",
+    "#ff006e"
+  ];
+
+  const total = amountPerSide * 2;
+
+  for (let i = 0; i < total; i++) {
+    const piece = document.createElement("div");
+    piece.classList.add("confetti-piece");
+
+    const size = Math.random() * 6 + 6;
+    piece.style.width = `${size}px`;
+    piece.style.height = `${size * 1.5}px`;
+    piece.style.backgroundColor =
+      colors[Math.floor(Math.random() * colors.length)];
+
+    document.body.appendChild(piece);
+
+    // Decide left or right cannon
+    const fromLeft = i < amountPerSide;
+
+    const startX = fromLeft ? 0 : window.innerWidth;
+    const startY = window.innerHeight * 0.75;
+
+    piece.style.left = `${startX}px`;
+    piece.style.top = `${startY}px`;
+
+    // Angle
+    const angle = fromLeft
+      ? Math.random() * 60 - 30      // shoot right side
+      : Math.random() * 60 + 150;    // shoot left side
+
+    const velocity = Math.random() * 8 + 8;
+
+    let vx = Math.cos(angle * Math.PI / 180) * velocity;
+    let vy = Math.sin(angle * Math.PI / 180) * velocity;
+
+
+    let x = startX;
+    let y = startY;
+    let gravity = 0.35;
+    let rotation = Math.random() * 360;
+    let rotationSpeed = Math.random() * 10;
+
+    function animate() {
+      vy += gravity;
+      x += vx;
+      y += vy;
+      rotation += rotationSpeed;
+
+      piece.style.transform = `translate(${x - startX}px, ${y - startY}px) rotate(${rotation}deg)`;
+
+      if (y < window.innerHeight + 100) {
+        requestAnimationFrame(animate);
+      } else {
+        piece.remove();
+      }
+    }
+
+    animate();
+  }
+}
+
+
+function fireCannonWaves(waves = 5, delay = 400) {
+  let count = 0;
+
+  const interval = setInterval(() => {
+    launchConfettiCannons(60);
+    count++;
+
+    if (count >= waves) {
+      clearInterval(interval);
+    }
+  }, delay);
+}
 
 
 
@@ -620,9 +711,15 @@ function unlockBirthday() {
   card.style.opacity = "0";
   card.style.transform = "scale(0.92)";
 
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+
   setTimeout(() => {
     birthdayCard.classList.remove("hidden");
     birthdayCard.classList.add("show");
+
+    fireCannonWaves(6, 500); // 🎉 BOOM
   }, 600);
 }
 
@@ -656,6 +753,25 @@ const heartInterval = isMobile ? 350 : 220;
 setInterval(createHeart, heartInterval);
 
 
+
+function getNextBirthday() {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+
+  let birthday = new Date(`February 27, ${currentYear} 00:00:00`);
+
+  // If this year's birthday already passed → use next year
+  if (birthday < now) {
+    birthday = new Date(`February 27, ${currentYear + 1} 00:00:00`);
+  }
+
+  return birthday;
+}
+
+let birthday = getNextBirthday();
+
+
+
 function updateCountdown() {
   const now = new Date();
   const timeRemaining = birthday - now;
@@ -666,16 +782,17 @@ function updateCountdown() {
     const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
-    countdown.textContent = `Birthday is in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    countdown.textContent = `Your Birthday is in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
   } else {
     countdown.textContent = "Happy Birthday!";
     // Show the hidden birthday card here
-    const birthdayCard = document.getElementById("birthdayCard");
-    birthdayCard.style.display = "block";
+    classList.remove("hidden")
+    classList.add("show")
+   
   }
 }
 
-setInterval(updateCountdown, 1000);
+
 
 [nextBtn, storyEndBtn].forEach(btn => {
   btn.addEventListener("click", e => e.stopPropagation());
@@ -797,7 +914,7 @@ const vallyIntro = [
 
   },
    {
-    text: "Okay, I think that’s all for the introduction.<br> I’ll be here if you need me!<br> Just tap the next button<br> to start your journey!",
+    text: "Okay, I think that’s all for the introduction.<br> I’ll be here if you need me!<br> Just tap the next button<br> to Read the message.",
     image: "images/vally/Happy jump.webp"
   }
 ];
@@ -845,15 +962,15 @@ const vallyNoEnding = [
 const yesStory = [
   {
     text: "You said yes… 💖",
-    image: "images/story/img9.jpg"
+    image: "images/story/img6.jpg"
   },
   {
     text: "That honestly means a lot.",
-    image: "images/story/img9.jpg"
+    image: "images/story/img6.jpg"
   },
   {
     text: "I’ve been waiting to hear that.",
-    image: "images/story/img9.jpg"
+    image: "images/story/img6.jpg"
   }
 ];
 
@@ -1033,19 +1150,28 @@ function fadeInAudio(audio, targetVolume = 0.6, duration = 2000) {
 
 
 function startBackgroundMusic() {
+
+  // 🛑 DO NOT auto-play if user muted it manually
+  if (userMutedMusic) return;
+
   if (!musicStarted) {
-    fadeInAudio(bgMusic, 0.6, 2500); // volume, duration
+    fadeInAudio(bgMusic, 0.6, 2500);
     musicStarted = true;
+  }
+
+  if (bgMusic.paused) {
+    bgMusic.play().catch(() => {});
   }
 
   bgMusic.volume = 0.35;
   bgMusic.loop = true;
-  bgMusic.play().catch(() => {});
-  musicStarted = true;
+
+  musicToggle.textContent = "🔊";
 
   document.removeEventListener("click", startBackgroundMusic);
   document.removeEventListener("touchstart", startBackgroundMusic);
 }
+
 
 // Start music on FIRST user interaction anywhere
 document.addEventListener("click", startBackgroundMusic);
