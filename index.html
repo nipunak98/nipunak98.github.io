@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <title>💝 For You</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preload" as="image" href="images/story/img2.jpg">
+  <link rel="preload" as="image" href="images/story/img3.jpg">
+  <link rel="preload" as="image" href="images/story/img4.jpg">
+  <link rel="preload" as="image" href="images/story/img5.jpg">
+  <link rel="preload" as="image" href="images/story/img6.jpg">
+  <link rel="preload" as="image" href="images/story/img7.jpg">
+  <link rel="preload" as="image" href="images/story/img9.jpg">
+  <link rel="preload" as="image" href="images/story/img10.jpg">
+  <link rel="preload" as="image" href="images/story/img11.jpg">
+
+
 </head>
 <body>
 
@@ -23,7 +34,7 @@
   <!-- Vally Guide Overlay -->
     <div id="vallyOverlay" class="vally-overlay hidden">
       <div class="vally">
-        <img id="vallyImage" src="images/vally/pointing1.png" alt="Vally">
+        <img id="vallyImage" src="images/vally/pointing1.webp" alt="Vally">
           <div class="vally-speech">
             <div class="vally-bubble" id="vallyText"></div>
             <button id="vallyNext">Got it ✨</button>
@@ -68,17 +79,17 @@
                 the same way you do to mine 💫
               </p>
 
-              <p class="from">— Yours 😊</p>
+              <p class="from">— From Nipuna</p>
 
               <p>
-                Would you like to go on a train ride?<br>
-                If yes, click <b>Next 🚆</b>
+                There are more to see in this card<br>
+                just click <b>Next 🚆</b>
               </p>
           </div>
 
         <!-- STORY (step 1+) -->
           <div id="storyStep" class="step hidden">
-            <img id="storyImage" class="story-image" />
+            <img id="storyImage" class="story-image" loading="eager"/>
             <h1 id="storyTitle"></h1>
             <p id="storyText"></p>
             <button id="storyEndBtn" class="hidden">Bye 👋</button>
@@ -91,8 +102,8 @@
       </div>
 
         <!-- FINAL QUESTION -->
-        <div class="final-choice hidden" id="finalChoice">
-          <p>Will you be my Valentine? 💖</p>
+       <div class="final-choice hidden" id="finalChoice">
+          <p>Did This Card made your Day Better? 💖</p>
           <button id="yesBtn">Yes 💕</button>
           <button id="noBtn">No 💔</button>
         </div>

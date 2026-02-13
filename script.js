@@ -11,12 +11,14 @@ const countdown = document.getElementById("countdown");
 const birthday = new Date("February 27, 2023 00:00:00");
 
 
-
+let vallyActive = true;
 let musicStarted = false;
 let currentStep = -1;
 let currentStory = null;   // yesStory or noStory
 let branchStep = 0;        // index for yes/no story
 let userChoice = null; // "yes" or "no"
+let isTransitioning = false;
+
 
 const greetingStep = document.getElementById("greetingStep");
 const storyStep = document.getElementById("storyStep");
@@ -33,59 +35,137 @@ const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const storyEndBtn = document.getElementById("storyEndBtn");
 
+const preloadImages = [
+  "images/story/img2.jpg",
+  "images/story/img3.jpg",
+  "images/story/img4.jpg",
+  "images/story/img5.jpg",
+  "images/story/img6.jpg",
+  "images/story/img7.jpg",
+  "images/story/img9.jpg",
+  "images/story/img10.jpg",
+  "images/story/img11.jpg",
+  
+
+  "images/vally/exited.webp",
+  "images/vally/pointing.webp",
+  "images/vally/Happy jump.webp",
+  "images/vally/hands n hips.webp",
+  "images/vally/nerd explain.webp",
+  "images/vally/explain.webp",
+  "images/vally/secret.webp",
+  "images/vally/pointing up.webp",
+  "images/vally/refresh.webp",
+  "images/vally/sad concern.webp",
+  "images/vally/laughing shy.webp",
+  "images/vally/explain question.webp",
+  "images/vally/music.webp",
+  "images/vally/moon.webp",
+  
+];
+
+/* ================= IMAGE CACHE ================= */
+
+const imageCache = {};
+let vallyReady = false;
+
+function preloadAndDecode(src) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = src;
+
+    img.onload = async () => {
+      if (img.decode) {
+        try {
+          await img.decode();
+        } catch (e) {}
+      }
+      imageCache[src] = img;
+      resolve();
+    };
+  });
+}
+
+Promise.all(
+  preloadImages.map(src => preloadAndDecode(src))
+).then(() => {
+  vallyReady = true;
+  console.log("All images fully decoded ✅");
+});
+
+
+
+function warmUpStoryImage() {
+  if (!storyImage) return;
+
+  // Use first real story image
+  storyImage.src = "images/story/img2.jpg";
+  storyImage.style.visibility = "hidden";
+
+  requestAnimationFrame(() => {
+    storyImage.style.visibility = "visible";
+  });
+}
 
 
 
 const storySteps = [
 
-  { text:" I would like to take you on a journey.\n Actually it's a little story.In this story, you make decisions.",
-    image: "images/story/img1.png"
-
+  { text:" I Have A Little message For you...💌"
   },
   {
     
-    text: "Here's your ticket.\nGrab this. I'm at the next station waiting for you.",
-    image: "images/story/img2.png"
+    text: "I hope This Card Brings a Smile to your Face 😊<br> and Warms your Heart 💖",
+    image: "images/story/img2.jpg"
   },
   
   {
     
-    text: "You stepped onto the train.\n The train started moving, and we were on our way.",
-    image: "images/story/img3.png"
+    text: "I Value Your Frendship A Lot, and I wanted to create something special for you on this Valentine's day 💫 (Add me) ",
+    image: "images/story/img3.jpg"
   },
   {
     
-    text: "The view outside was calm and beautiful.\nTime felt slower.",
-    image: "images/story/img4.png"
+    text: "I wanna Say That you are not forgotten, you are cared for and you are Appriciated 💕",
+    image: "images/story/img4.jpg"
   },
   {
     
-    text: "The train stopped.\nYou stepped off.",
-    image: "images/story/img5.png"
+    text: "So, Always Stay Happy, Keep Smiling Laughing and Enjoying Life💫",
+    image: "images/story/img5.jpg"
   },
   {
    
-    text: "I was there when you arrived.\nI wanted to ask you something.",
-    image: "images/story/img6.png"
+    text: "And I wish you Helthy, Successful and Love filled life ahead 💖",
+    image: "images/story/img6.jpg"
+  },
+  {
+    text: "Eat healthy, Sleep well, Take care of yourself,  and never forget to be kind to yourself and others 💫",
+    image: "images/story/img7.jpg"
+
   },
   {
     
-    text: "I know everything was bit sudden, you are confused, and you might be overthinking thigs a lot recently.",
-    image:  "images/story/img7.png"
+    text: "I know we have some ups and downs between us, but no matter what you can always count on me to be there for you Mate.",
+    image:  "images/story/img9.jpg"
   },
   {
     
-    text: "But today is a special day.\nA day of love being celebreated. A day that reminds us to cherish the people we care about.",
-    image:  "images/story/img6.png"
+    text: "I hope that this card can be a little reminder of how much you are cared and valued, not just by me but by many people around you.",
+    image:  "images/story/img11.jpg"
   },
 
   {
     
     text: "so i have one question to ask you.",
-    image: "images/story/img6.png"
+    image: "images/story/img6.jpg"
   }
   
 ];
+
+
+
+
 
 
 
@@ -99,32 +179,25 @@ let manualNightMode = false;
 
 /* ================= STORY HANDLING ================= */
 
+
+
+
 // card.addEventListener("click", () => {
 //   card.classList.toggle("open");
 //   heartRain.style.filter = card.classList.contains("open")
 //     ? "blur(1px)"
 //     : "none";
-
-//   if (card.classList.contains("open")) {
-//   if (currentStory) {
-//     if (branchStep < currentStory.length - 1) {
-//       branchStep++;
-//       renderBranchStory();
-//     }
-//   } else {
-//     renderStory();
-//   }
-// }
-
 // });
 
-
 card.addEventListener("click", () => {
+  if (vallyActive) return;
+
   card.classList.toggle("open");
   heartRain.style.filter = card.classList.contains("open")
     ? "blur(1px)"
     : "none";
 });
+
 
 refreshBtn.addEventListener("click", (e) => {
   e.stopPropagation(); // don’t close card
@@ -135,12 +208,17 @@ refreshBtn.addEventListener("click", (e) => {
 nextBtn.addEventListener("click", (e) => {
   e.stopPropagation();
 
+  if (isTransitioning) return;
+  isTransitioning = true;
+  nextBtn.disabled = true;
+
   // 👉 BRANCH STORY MODE
   if (currentStory) {
     if (branchStep < currentStory.length - 1) {
       branchStep++;
       renderBranchStory();
     }
+    unlockNext();
     return;
   }
 
@@ -153,7 +231,8 @@ nextBtn.addEventListener("click", (e) => {
       storyStep.classList.remove("hidden");
       currentStep = 0;
       renderStory();
-    }, 600);
+      unlockNext()
+    });
     return;
   }
 
@@ -161,12 +240,20 @@ nextBtn.addEventListener("click", (e) => {
     transitionStep(() => {
       currentStep++;
       renderStory();
+      unlockNext();
     });
   }
 });
 
 
 /* Fade helpers */
+
+function unlockNext() {
+  requestAnimationFrame(() => {
+    isTransitioning = false;
+    nextBtn.disabled = false;
+  });
+}
 
 function fadeOutGreeting(callback) {
   const greeting = document.getElementById("greetingStep");
@@ -194,44 +281,107 @@ function transitionStep(callback) {
 
 
 
-function renderStory() {
+// function renderStory() {
 
-  // Greeting visible
-  if (currentStep === -1) {
-    greetingStep.classList.add("active");
-    storyStep.classList.add("hidden");
-    finalChoice.classList.add("hidden");
-    return;
-  }
+//   // Greeting visible
+//   if (currentStep === -1) {
+//     greetingStep.classList.add("active");
+//     storyStep.classList.add("hidden");
+//     finalChoice.classList.add("hidden");
+//     return;
+//   }
 
-  const step = storySteps[currentStep];
+//   const step = storySteps[currentStep];
 
-  storyImage.classList.remove("show");
+//   // storyImage.classList.remove("show");
 
-  storyImage.onload = () => {
-    storyImage.classList.add("show");
-  };
+//   // storyImage.onload = () => {
+//   //   requestAnimationFrame(() =>{
+//   //     storyImage.classList.add("show");
 
-  storyImage.src = step.image;
-  storyText.innerHTML = step.text.replace(/\n/g, "<br>");
+//   //   });
+    
+//   // };
 
-  console.log("Loading image:", step.image);
-
-
-  storyStep.classList.remove("hidden");
-
-  // requestAnimationFrame(() => {
-  //   storyStep.classList.add("active");
-  // });
+//   storyImage.onload = null;
+//   storyImage.src = step.image;
 
 
-  storyStep.classList.remove("active");
+//   storyImage.src = step.image;
+//   storyText.innerHTML = step.text.replace(/\n/g, "<br>");
 
-    setTimeout(() => {
-      storyStep.classList.add("active");
-    }, 50); 
+//   console.log("Loading image:", step.image);
+
+
+//   storyStep.classList.remove("hidden");
+
+
+
+
+//   storyStep.classList.remove("active");
+
+//     setTimeout(() => {
+//       storyStep.classList.add("active");
+//     }, 50); 
 
   
+
+//   if (currentStep === storySteps.length - 1) {
+//     finalChoice.classList.remove("hidden");
+//     nextBtn.style.display = "none";
+//   } else {
+//     finalChoice.classList.add("hidden");
+//     nextBtn.style.display = "inline-block";
+//   }
+// }
+
+
+// function renderStory() {
+//   const step = storySteps[currentStep];
+
+//   storyText.innerHTML = step.text.replace(/\n/g, "<br>");
+
+//   if (step.image) {
+//     storyImage.src = step.image;
+//     storyImage.style.display = "block";
+//   } else {
+//     storyImage.style.display = "none";
+//   }
+
+//   storyStep.classList.add("active");
+
+//   if (currentStep === storySteps.length - 1) {
+//     finalChoice.classList.remove("hidden");
+//     nextBtn.style.display = "none";
+//   } else {
+//     finalChoice.classList.add("hidden");
+//     nextBtn.style.display = "inline-block";
+//   }
+// }
+
+function renderStory() {
+  const step = storySteps[currentStep];
+
+  //  Lock next button until paint finishes
+  isTransitioning = true;
+  nextBtn.disabled = true;
+
+  // Update everything BEFORE paint
+  storyText.innerHTML = step.text.replace(/\n/g, "<br>");
+
+  if (step.image) {
+    storyImage.src = step.image;
+    storyImage.style.display = "block";
+  } else {
+    storyImage.style.display = "none";
+  }
+
+  // Force atomic paint
+  requestAnimationFrame(() => {
+    storyStep.classList.add("active");
+
+    unlockNext(); //  unlock after render
+  });
 
   if (currentStep === storySteps.length - 1) {
     finalChoice.classList.remove("hidden");
@@ -241,6 +391,7 @@ function renderStory() {
     nextBtn.style.display = "inline-block";
   }
 }
+
 
 function startBranchStory(storyArray) {
   currentStory = storyArray;
@@ -255,14 +406,43 @@ function startBranchStory(storyArray) {
   renderBranchStory();
 }
 
+// function renderBranchStory() {
+//   const step = currentStory[branchStep];
+
+//   storyImage.onload = null;
+//   // storyImage.classList.remove("show");
+//   // storyImage.onload = () => storyImage.classList.add("show");
+//   storyImage.src = step.image;
+
+//   storyText.innerHTML = step.text.replace(/\n/g, "<br>");
+
+//   if (branchStep === currentStory.length - 1) {
+//     nextBtn.style.display = "none";
+//     storyEndBtn.classList.remove("hidden");
+//   } else {
+//     nextBtn.style.display = "inline-block";
+//     storyEndBtn.classList.add("hidden");
+//   }
+// }
+
 function renderBranchStory() {
   const step = currentStory[branchStep];
 
-  storyImage.classList.remove("show");
-  storyImage.onload = () => storyImage.classList.add("show");
-  storyImage.src = step.image + "?t=" + Date.now(); // force reload
+  isTransitioning = true;
+  nextBtn.disabled = true;
 
   storyText.innerHTML = step.text.replace(/\n/g, "<br>");
+
+  if (step.image) {
+    storyImage.src = step.image;
+    storyImage.style.display = "block";
+  } else {
+    storyImage.style.display = "none";
+  }
+
+  requestAnimationFrame(() => {
+    unlockNext();
+  });
 
   if (branchStep === currentStory.length - 1) {
     nextBtn.style.display = "none";
@@ -543,82 +723,82 @@ let vallyTypingInterval = null;
 const vallyIntro = [
   {
     text: "Hi! I’m Vally 😊<br>I'm your Valentine's day card.",
-    image: "images/vally/exited.png"
+    image: "images/vally/exited.webp"
   },
   {
     text: "Heyy, I know youu...😊<br> You are Sajeeka, right!?.",
-    image: "images/vally/pointing.png"
+    image: "images/vally/pointing.webp"
   },
   {
     text: "Guy who created me told me about you!<br> hello, how are you?<br>You are amazing as the stroies i heard about you .",
-    image: "images/vally/pointing.png"
+    image: "images/vally/pointing.webp"
   },
   {
     text: "well, this is a special card,<br> it’s not like the other cards<br> you have seen before.<br>💖",
-    image: "images/vally/exited.png"
+    image: "images/vally/exited.webp"
   },
   {
     text: "I'm the only card in the world that is talking!<br>and creator made me just for you!<br>Isn’t that amazing?😊",
-    image: "images/vally/hands n hips.png"
+    image: "images/vally/hands n hips.webp"
   },
 
   {
     text: "Please allow me to show you around.",
-    image: "images/vally/explain.png"
+    image: "images/vally/explain.webp"
   },
 
   {
-    text: "This is a special card 💌<br>You can tap it to open.<br> creator left you a ticket <br>for a train ride inside the card",
-    image: "images/vally/nerd explain.png"
+    text: "This is a special card 💌<br>You can tap it to open.<br> creator Has A Message For you",
+    image: "images/vally/nerd explain.webp"
   },
    {
-    text: "Grab it and step on the train!<br> It will take you to a little journey.",
-    image: "images/vally/pointing up.png"
+    text: "I hope It Will Make Your day Better 💫",
+    image: "images/vally/pointing up.webp"
   },
 
    {
     text: "Oh!, almost forgot... <br>there are three buttons.<br> the refresh button will load the card",
-    image: "images/vally/refresh.png"
+    image: "images/vally/refresh.webp"
   },
    {
     text: "Moon button is for the dark mode<br> in case it's too bright to your eyes.",
-    image: "images/vally/moon.png"
+    image: "images/vally/moon.webp"
   },
 
   {
     text: "and fianlly, the music button.<br> you can turn it on and off as you like 🎵",
-    image: "images/vally/music.png"
+    image: "images/vally/music.webp"
   },
 
   
   {
     text: "There are tiny hearts falling too 💜❤️<br>Some are more special than others 😉",
-    image: "images/vally/Happy jump.png"
+    image: "images/vally/Happy jump.webp"
   },
   {
     text: "Pssst...<br> try tapping on the red hearts<br> if you see them!<br> They have a little surprise <br>for you 🎁",
-    image: "images/vally/secret.png"
+    image: "images/vally/secret.webp"
   },
   {
     text: "I want to apologize in advance, if there are mishaps in the card.",
-    image: "images/vally/sad concern.png"
+    image: "images/vally/sad concern.webp"
   },
   {
     text: "Creator said he tried everything <br>to make it work perfectly, <br>but you know, sometimes things just don’t go as planned 😅",
-    image: "images/vally/nerd explain.png"
+    image: "images/vally/nerd explain.webp"
   },
   {
     text: "Creator said he made me with one brain cell, so I might be a little slow sometimes 🧠💤",
-    image: "images/vally/explain question.png"
+    image: "images/vally/explain question.webp"
   },
   {
     text: "He said you have 2 very big brain cells,<br> so you are already smarter than me!<br> But please be patient with me<br> if I mess up sometimes 🙏",
-    image: "images/vally/laughing shy.png"
+    image: "images/vally/laughing shy.webp"
 
   },
    {
     text: "Okay, I think that’s all for the introduction.<br> I’ll be here if you need me!<br> Just tap the next button<br> to start your journey!",
-    image: "images/vally/Happy jump.png"
+    image: "images/vally/Happy jump.webp"
   }
 ];
 
@@ -626,66 +806,69 @@ const vallyIntro = [
 const vallyYesEnding = [
   {
     text: "I knew it 💖<br>I could feel it somehow.",
-    image: "images/vally/exited.png"
+    image: "images/vally/exited.webp"
   },
   {
-    text: "Love takes courage…<br>and you chose it ✨",
-    image: "images/vally/Happy jump.png"
+    text: "Thank you for taking your time to see this card ✨",
+    image: "images/vally/Happy jump.webp"
   },
   {
-    text: "I’m very happy for you 💌",
-    image: "images/vally/Happy jump.png"
+    text: "I’m very happy that you enjoyed it 💌",
+    image: "images/vally/Happy jump.webp"
   }, 
    {
     text: "Didn't you found the surprice yet? <br> Try tapping on the red hearts if you see them!<br> They have a little surprise for you 🎁",
-    image: "images/vally/nerd explain.png"
+    image: "images/vally/nerd explain.webp"
   },
 ];
 
 const vallyNoEnding = [
   {
-    text: "That’s okay 🌱",
-    image: "images/vally/calm.png"
+    text: "Well, that was unexpected<br>But,that’s okay 🌱",
+    image: "images/vally/laughing shy.webp"
   },
   {
     text: "Being honest is braver than saying yes for the wrong reasons.",
-    image: "images/vally/calm.png"
+    image: "images/vally/laughing shy.webp"
   },
   {
     text: "Thank you for being true to your heart 💙",
-    image: "images/vally/calm.png"
-  }
+    image: "images/vally/laughing shy.webp"
+  },
+  {
+    text: "Didn't you found the surprice yet? <br> Try tapping on the red hearts if you see them!<br> They have a little surprise for you 🎁",
+    image: "images/vally/nerd explain.webp"
+  },
 ];
 
 
 const yesStory = [
   {
     text: "You said yes… 💖",
-    image: "images/story/img8.png"
+    image: "images/story/img9.jpg"
   },
   {
     text: "That honestly means a lot.",
-    image: "images/story/img8.png"
+    image: "images/story/img9.jpg"
   },
   {
     text: "I’ve been waiting to hear that.",
-    image: "images/story/img8.png"
+    image: "images/story/img9.jpg"
   }
 ];
 
 const noStory = [
   {
     text: "You said no… 🌱",
-    image: "images/story-no-1.png"
   },
   {
     text: "And that’s completely okay.",
-    image: "images/story-no-2.png"
   },
   {
     text: "Thank you for being honest.",
-    image: "images/story-no-3.png"
-  }
+  },
+ 
+
 ];
 
 
@@ -693,58 +876,50 @@ const noStory = [
 
 
 
-window.addEventListener("load", () => {
+// window.addEventListener("load", () => {
+//   showVallyIntro();
+// });
+
+document.addEventListener("DOMContentLoaded", () => {
+  warmUpStoryImage();
   showVallyIntro();
 });
 
 
 
-
-
 function showVallyIntro() {
+  if (!vallyReady) {
+    setTimeout(showVallyIntro, 100);
+    return;
+  }
+
+  document.querySelector(".scene").classList.add("locked");
   document.querySelector(".scene").style.filter = "blur(4px)";
   vallyOverlay.classList.remove("hidden");
   vallyStep = 0;
   updateVally();
 }
 
-// function updateVally() {
-//   const step = vallyIntro[vallyStep];
-//   vallyText.innerHTML = step.text;
-//   vallyImage.src = step.image;
-// }
+
+
+
 
 function updateVally() {
   const step = vallyIntro[vallyStep];
-  vallyImage.src = step.image;
+
+  const cached = imageCache[step.image];
+  if (cached) {
+    vallyImage.src = cached.src;
+  } else {
+    vallyImage.src = step.image; // fallback
+  }
 
   typeVallyText(step.text);
 }
 
 
-// vallyNext.addEventListener("click", () => {
 
-//   // INTRO FLOW
-//   if (!vallyEnding.length) {
-//     vallyStep++;
-//     if (vallyStep < vallyIntro.length) {
-//       updateVally();
-//     } else {
-//       hideVally();
-//     }
-//     return;
-//   }
-
-//   // ENDING FLOW
-//   vallyEndingStep++;
-
-//   if (vallyEndingStep < vallyEnding.length) {
-//     updateVallyEnding();
-//   } else {
-//     vallyNext.style.display = "none"; // end of conversation
-//   }
-// });
-
+ 
 
 vallyNext.addEventListener("click", () => {
   startBackgroundMusic(); // Ensure music starts on first interaction with Vally
@@ -778,10 +953,20 @@ vallyNext.addEventListener("click", () => {
 
 
 
+// function hideVally() {
+//   document.querySelector(".scene").style.filter = "none";
+//   vallyOverlay.classList.add("hidden");
+// }
+
 function hideVally() {
-  document.querySelector(".scene").style.filter = "none";
+  const scene = document.querySelector(".scene");
+  scene.style.filter = "none";
+  scene.classList.remove("locked");
   vallyOverlay.classList.add("hidden");
+
+  vallyActive = false; //  allow interaction
 }
+
 
 function endStory() {
   storyEndBtn.classList.add("hidden");
@@ -796,27 +981,22 @@ function endStory() {
 }
 
 
-// function updateVallyEnding() {
-//   const step = vallyEnding[vallyEndingStep];
-//   vallyText.innerHTML = step.text;
-//   vallyImage.src = step.image;
 
-//   vallyText.style.opacity = 0;
-
-// setTimeout(() => {
-//   vallyText.innerHTML = step.text;
-//   vallyImage.src = step.image;
-//   vallyText.style.opacity = 1;
-// }, 200);
-// }
 
 
 function updateVallyEnding() {
   const step = vallyEnding[vallyEndingStep];
-  vallyImage.src = step.image;
+
+  const cached = imageCache[step.image];
+  if (cached) {
+    vallyImage.src = cached.src;
+  } else {
+    vallyImage.src = step.image;
+  }
 
   typeVallyText(step.text);
 }
+
 
 
 function showVallyEnding() {
