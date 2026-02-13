@@ -48,6 +48,7 @@ const preloadImages = [
   "images/story/img9.jpg",
   "images/story/img10.jpg",
   "images/story/img11.jpg",
+  "images/story/img66.jpg",
   
 
   "images/vally/exited.webp",
@@ -149,12 +150,12 @@ const storySteps = [
   },
   {
     
-    text: "I know we have some ups and downs between us, but no matter what you can always count on me to be there for you Mate.",
+    text: "I know we have some ups and downs between us, but no matter what you can always count on me to be there for you.💫",
     image:  "images/story/img9.jpg"
   },
   {
     
-    text: "I hope that this card can be a little reminder of how much you are cared and valued, not just by me but by many people around you.",
+    text: "I hope that this card can be a little reminder of how much you are cared and valued, not just by me but by many people around you.😊",
     image:  "images/story/img11.jpg"
   },
 
