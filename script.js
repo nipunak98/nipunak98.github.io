@@ -121,7 +121,7 @@ const storySteps = [
   
   {
     
-    text: "I Value Your Frendship A Lot, and I wanted to create something special for you on this Valentine's day 💫 (Add me) ",
+    text: "I Value Your Frendship A Lot, and I wanted to create something special for you on this Valentine's day 💫 ",
     image: "images/story/img3.jpg"
   },
   {
@@ -146,7 +146,7 @@ const storySteps = [
   },
   {
     
-    text: "I know we have some ups and downs between us, but no matter what you can always count on me to be there for you Mate.",
+    text: "I know we have some ups and downs between us, but no matter what you can always count on me to be there for you.",
     image:  "images/story/img9.jpg"
   },
   {
