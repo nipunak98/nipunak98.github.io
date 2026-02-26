@@ -140,7 +140,7 @@ const storySteps = [
   },
   {
    
-    text: "And I wish you Healthy, Successful and Love filled life ahead 💖",
+    text: "And I wish you Helthy, Successful and Love filled life ahead 💖",
     image: "images/story/img66.jpg"
   },
   {
@@ -178,6 +178,7 @@ const storySteps = [
 let redHeartCount = 0;
 let birthdayUnlocked = false;
 let manualNightMode = false;
+let birthdayReached = false;
 
 
 
@@ -720,7 +721,7 @@ function unlockBirthday() {
     birthdayCard.classList.remove("hidden");
     birthdayCard.classList.add("show");
 
-    fireCannonWaves(1, 500); // 🎉 BOOM
+    fireCannonWaves(6, 500); // 🎉 BOOM
   }, 600);
 }
 
@@ -769,9 +770,31 @@ function getNextBirthday() {
   return birthday;
 }
 
-let birthday = getNextBirthday();
+//let birthday = getNextBirthday();
+
+let birthday = new Date(Date.now() + 5000);
 
 
+
+// function updateCountdown() {
+//   const now = new Date();
+//   const timeRemaining = birthday - now;
+
+//   if (timeRemaining > 0) {
+//     const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+//     const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+//     const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+//     const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+//     countdown.textContent = `Your Birthday is in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+//   } else {
+//     countdown.textContent = "Happy Birthday!";
+//     // Show the hidden birthday card here
+//     classList.remove("hidden")
+//     classList.add("show")
+   
+//   }
+// }
 
 function updateCountdown() {
   const now = new Date();
@@ -783,17 +806,17 @@ function updateCountdown() {
     const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
-    countdown.textContent = `Your Birthday is in ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+    countdown.textContent =
+      `🎂 Birthday is in ${days}d ${hours}h ${minutes}m ${seconds}s`;
   } else {
-    countdown.textContent = "Happy Birthday!";
-    // Show the hidden birthday card here
-    classList.remove("hidden")
-    classList.add("show")
-   
+    countdown.textContent = "🎉 Happy Birthday!";
+
+    if (!birthdayReached) {
+      birthdayReached = true;
+      onBirthdayReached();
+    }
   }
 }
-
-
 
 [nextBtn, storyEndBtn].forEach(btn => {
   btn.addEventListener("click", e => e.stopPropagation());
@@ -935,7 +958,7 @@ const vallyYesEnding = [
     image: "images/vally/Happy jump.webp"
   }, 
    {
-    text: "Didn't you found the surprise yet? <br> Try tapping on the red hearts if you see them!<br> They have a little surprise for you 🎁",
+    text: "Didn't you found the surprice yet? <br> Try tapping on the red hearts if you see them!<br> They have a little surprise for you 🎁",
     image: "images/vally/nerd explain.webp"
   },
 ];
@@ -1205,3 +1228,126 @@ function typeVallyText(htmlText, speed = 35, callback) {
   }, speed);
 }
 
+function fadeAudio(audio, targetVolume, duration = 2000) {
+  const step = 50;
+  const volumeStep = (targetVolume - audio.volume) / (duration / step);
+
+  const fade = setInterval(() => {
+    audio.volume = Math.min(
+      1,
+      Math.max(0, audio.volume + volumeStep)
+    );
+
+    if (
+      (volumeStep > 0 && audio.volume >= targetVolume) ||
+      (volumeStep < 0 && audio.volume <= targetVolume)
+    ) {
+      audio.volume = targetVolume;
+      clearInterval(fade);
+    }
+  }, step);
+}
+
+
+function onBirthdayReached() {
+  // Fade out birthday card
+  birthdayCard.classList.remove("show");
+  birthdayCard.style.opacity = "0";
+
+  setTimeout(() => {
+    birthdayCard.classList.add("hidden");
+    showLifeStats();
+  }, 1200);
+}
+
+// function showLifeStats() {
+//   const stats = document.getElementById("lifeStats");
+//   const credits = stats.querySelector(".credits");
+//   stats.classList.remove("hidden");
+
+//   requestAnimationFrame(() => {
+//     requestAnimationFrame(() => {
+//       credits.style.animation = "scrollCredits 60s linear forwards";
+//     });
+//   });
+
+//   // Hide UI controls
+//   const ui = document.getElementById("uiControls");
+//   if (ui) ui.style.opacity = "0";
+
+//   // Dim hearts
+//   const rain = document.querySelector(".heart-rain");
+//   if (rain) rain.style.opacity = "0.15";
+
+//   // MUSIC TRANSITION
+//   const creditsMusic = document.getElementById("creditsMusic");
+
+//   if (bgMusic && creditsMusic) {
+//     creditsMusic.volume = 0;
+//     creditsMusic.play();
+
+//     fadeAudio(bgMusic, 0, 2500);        // fade out main music
+//     setTimeout(() => {bgMusic.pause();}, 2600);
+//     fadeAudio(creditsMusic, 0.35, 3000); // fade in credits music
+//   }
+// }
+
+function showLifeStats() {
+  const stats = document.getElementById("lifeStats");
+  const credits = stats.querySelector(".credits");
+
+  stats.classList.remove("hidden");
+
+  // Force paint first
+  requestAnimationFrame(() => {
+    startCreditsScroll(credits, 60); // 60 seconds duration
+  });
+
+  // Dim hearts
+  const rain = document.querySelector(".heart-rain");
+  if (rain) rain.style.opacity = "0.15";
+
+  // Music transition
+  const creditsMusic = document.getElementById("creditsMusic");
+
+  if (bgMusic && creditsMusic) {
+    creditsMusic.volume = 0;
+    creditsMusic.play();
+
+    fadeAudio(bgMusic, 0, 2500);
+    setTimeout(() => { bgMusic.pause(); }, 2600);
+    fadeAudio(creditsMusic, 0.35, 3000);
+  }
+}
+
+
+function startCreditsScroll(element, durationSeconds) {
+  const totalHeight = element.offsetHeight;
+  const containerHeight = window.innerHeight;
+
+  const startY = containerHeight;
+  const endY = -totalHeight;
+
+  const duration = durationSeconds * 1000;
+  const startTime = performance.now();
+
+  function animate(time) {
+    const elapsed = time - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+
+    const currentY = startY + (endY - startY) * progress;
+    element.style.transform = `translateY(${currentY}px)`;
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+const outroGifs = document.querySelectorAll(".outro-gif");
+outroGifs.forEach(gif => {
+  gif.style.left = Math.random() * 80 + "%";   // random horizontal position
+  gif.style.top = Math.random() * 50 + "%";    // random vertical position
+});

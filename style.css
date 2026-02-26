@@ -663,3 +663,104 @@ body.night-mode::after {
   border-radius: 2px;
 }
 
+
+/*  LIFE STATS MOVIE OUTRO */
+
+.life-stats {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(#000, #12001f);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+  gap: 1rem;
+  padding: 2rem;
+  z-index: 9999;
+}
+
+.life-stats.hidden {
+  display: none;
+}
+
+
+.side-gif {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.side-gif img {
+  width: 60px; 
+  height: auto;
+  margin: 1rem 0; 
+}
+
+/* .credits {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  line-height: 2.2;
+  padding-bottom: 40vh;
+  animation: none;
+} */
+
+.credits {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  line-height: 2.2;
+  padding-bottom: 40vh;
+  will-change: transform;
+}
+
+
+.birthday-title {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  margin-bottom: 2rem;
+  color: #ffd6f6;
+  text-shadow: 0 0 20px rgba(255, 100, 200, 0.4);
+}
+
+.birthday-message {
+  max-width: 600px;
+  margin: 0 auto 2rem auto;
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  line-height: 1.8;
+  opacity: 0.95;
+}
+
+
+.credits h2 {
+  font-size: 1.6rem;
+  margin-bottom: 3rem;
+}
+
+.credit-divider {
+  margin: 4rem auto;
+  width: 60%;
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #fff, transparent);
+  opacity: 0.3;
+}
+
+.final-line {
+  margin-top: 4rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* @keyframes scrollCredits {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(-120%);
+  }
+} */
+
+
