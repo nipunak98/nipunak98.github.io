@@ -775,9 +775,9 @@ function getNextBirthday() {
   return birthday;
 }
 
-let birthday = getNextBirthday();
+// let birthday = getNextBirthday();
 
-// let birthday = new Date(Date.now() + 5000);
+let birthday = new Date(Date.now() + 5000);
 
 
 
