@@ -7,6 +7,11 @@ const birthdayCard = document.getElementById("birthdayCard");
 
 
 
+const lifeStats = document.getElementById("lifeStats");
+const credits = document.querySelector(".credits");
+const replayCreditsBtn = document.getElementById("replayCreditsBtn");
+const creditsMusic = document.getElementById("creditsMusic");
+
 const countdown = document.getElementById("countdown");
 // const birthday = new Date("February 27, 2023 00:00:00");
 
@@ -770,9 +775,11 @@ function getNextBirthday() {
   return birthday;
 }
 
-//let birthday = getNextBirthday();
+let birthday = getNextBirthday();
 
-let birthday = new Date(Date.now() + 5000);
+// let birthday = new Date(Date.now() + 5000);
+
+
 
 
 
@@ -1300,7 +1307,7 @@ function showLifeStats() {
 
   // Force paint first
   requestAnimationFrame(() => {
-    startCreditsScroll(credits, 60); // 60 seconds duration
+    startCreditsScroll(credits, 120); // 60 seconds duration
   });
 
   // Dim hearts
@@ -1321,6 +1328,34 @@ function showLifeStats() {
 }
 
 
+// function startCreditsScroll(element, durationSeconds) {
+//   const totalHeight = element.offsetHeight;
+//   const containerHeight = window.innerHeight;
+
+//   const startY = containerHeight;
+//   const endY = -totalHeight;
+
+//   const duration = durationSeconds * 1000;
+//   const startTime = performance.now();
+
+//   function animate(time) {
+//     const elapsed = time - startTime;
+//     const progress = Math.min(elapsed / duration, 1);
+
+//     const currentY = startY + (endY - startY) * progress;
+//     element.style.transform = `translateY(${currentY}px)`;
+
+//     if (progress < 1) {
+//       requestAnimationFrame(animate);
+//     }
+//   }
+
+//   requestAnimationFrame(animate);
+// }
+
+
+let creditsAnimationFrame = null;
+
 function startCreditsScroll(element, durationSeconds) {
   const totalHeight = element.offsetHeight;
   const containerHeight = window.innerHeight;
@@ -1331,6 +1366,9 @@ function startCreditsScroll(element, durationSeconds) {
   const duration = durationSeconds * 1000;
   const startTime = performance.now();
 
+  const replayBtn = document.getElementById("replayCreditsBtn");
+  replayBtn.classList.add("hidden");
+
   function animate(time) {
     const elapsed = time - startTime;
     const progress = Math.min(elapsed / duration, 1);
@@ -1339,15 +1377,101 @@ function startCreditsScroll(element, durationSeconds) {
     element.style.transform = `translateY(${currentY}px)`;
 
     if (progress < 1) {
-      requestAnimationFrame(animate);
+      creditsAnimationFrame = requestAnimationFrame(animate);
+    } else {
+      // replayBtn.classList.remove("hidden"); // show button when done
+      showFinalMessage();
     }
   }
 
-  requestAnimationFrame(animate);
+  creditsAnimationFrame = requestAnimationFrame(animate);
 }
+
 
 const outroGifs = document.querySelectorAll(".outro-gif");
 outroGifs.forEach(gif => {
   gif.style.left = Math.random() * 80 + "%";   // random horizontal position
   gif.style.top = Math.random() * 50 + "%";    // random vertical position
 });
+
+
+
+function startCredits() {
+  // Show credits screen
+  lifeStats.classList.remove("hidden");
+
+  // Reset scroll position
+  credits.style.transform = "translateY(100%)";
+
+  // Force layout reset
+  credits.getBoundingClientRect();
+
+  // Animate credits upward
+  credits.style.transition = "transform 60s linear";
+  credits.style.transform = "translateY(-120%)";
+
+  // Restart music
+  creditsMusic.currentTime = 0;
+  if (!userMutedMusic) {
+    creditsMusic.play().catch(() => {});
+  }
+
+  // Show replay button after credits finish
+  setTimeout(() => {
+    replayCreditsBtn.classList.remove("hidden");
+  }, 60000); // same as animation duration
+}
+
+
+
+function replayCredits() {
+  // stop old animation
+  if (creditsAnimationFrame) {
+    cancelAnimationFrame(creditsAnimationFrame);
+    creditsAnimationFrame = null;
+  }
+
+  // reset position
+  credits.style.transform = "translateY(0)";
+
+  // force layout reset
+  credits.getBoundingClientRect();
+
+  // restart scroll
+  startCreditsScroll(credits, 180);
+
+  // restart music
+  creditsMusic.currentTime = 0;
+  if (!userMutedMusic) {
+    creditsMusic.play().catch(() => {});
+  }
+}
+
+
+replayCreditsBtn.addEventListener("click", () => {
+  replayCreditsBtn.classList.add("hidden");
+  replayCredits();
+});
+
+
+function showFinalMessage() {
+  const finalMsg = document.createElement("div");
+  finalMsg.className = "final-message";
+  finalMsg.innerHTML = `
+    <h1>Happy 24th Birthday, Sajeeka 💖</h1>
+    <p>Thank you for being you.</p>
+    <button class="final-replay-btn">🔁 Watch Credits Again</button>
+  `;
+
+  document.body.appendChild(finalMsg);
+
+  requestAnimationFrame(() => {
+    finalMsg.classList.add("show");
+  });
+
+  // Replay click inside overlay
+  finalMsg.querySelector(".final-replay-btn").addEventListener("click", () => {
+    finalMsg.remove();      // remove overlay
+    replayCredits();        // restart credits
+  });
+}
